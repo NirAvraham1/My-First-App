@@ -1,15 +1,18 @@
 package com.example.myapplication
 
-import android.os.*
+import android.os.Bundle
 import android.view.View
-import android.widget.*
+import android.widget.Button
+import android.widget.GridLayout
+import android.widget.ImageView
+import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.getSystemService
 import androidx.lifecycle.lifecycleScope
-import com.example.myapplication.com.example.myapplication.GameLogic
+import com.example.myapplication.utilities.SignalManager
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import com.example.myapplication.GameLogic
 
 class MainActivity : AppCompatActivity() {
 
@@ -23,6 +26,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        SignalManager.init(applicationContext)
+
         logic = GameLogic()
         grid = findViewById(R.id.grid)
         restartBtn = findViewById(R.id.restart_btn)
@@ -31,13 +36,13 @@ class MainActivity : AppCompatActivity() {
 
         findViewById<FloatingActionButton>(R.id.left_btn).setOnClickListener {
             val crashed = logic.moveLeft()
-            if (crashed) vibrate()
+            if (crashed) SignalManager.getInstance().vibrate()
             updateUI()
         }
 
         findViewById<FloatingActionButton>(R.id.right_btn).setOnClickListener {
             val crashed = logic.moveRight()
-            if (crashed) vibrate()
+            if (crashed) SignalManager.getInstance().vibrate()
             updateUI()
         }
 
@@ -64,8 +69,8 @@ class MainActivity : AppCompatActivity() {
                 delay(1000L)
                 val crashed = logic.tick()
                 if (crashed) {
-                    Toast.makeText(this@MainActivity, "Crash!", Toast.LENGTH_SHORT).show()
-                    vibrate()
+                    SignalManager.getInstance().toast("Crash!")
+                    SignalManager.getInstance().vibrate()
                 }
                 updateUI()
             }
@@ -101,7 +106,6 @@ class MainActivity : AppCompatActivity() {
                 }
             }
 
-
             livesLayout.removeAllViews()
             repeat(logic.lives) {
                 val heart = ImageView(this)
@@ -109,18 +113,6 @@ class MainActivity : AppCompatActivity() {
                 heart.layoutParams = LinearLayout.LayoutParams(100, 100)
                 livesLayout.addView(heart)
             }
-        }
-    }
-
-    @Suppress("DEPRECATION")
-    private fun vibrate() {
-        val vibrator = getSystemService<Vibrator>()
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            vibrator?.vibrate(
-                VibrationEffect.createOneShot(300, VibrationEffect.DEFAULT_AMPLITUDE)
-            )
-        } else {
-            vibrator?.vibrate(300)
         }
     }
 }
