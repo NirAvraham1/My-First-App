@@ -1,0 +1,12 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- עיצוב בסיסי לאפליקציה עם AppCompat -->
+    <style name="Theme.MyApplication" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- צבעים בסיסיים -->
+        <item name="colorPrimary">#6200EE</item>
+        <item name="colorPrimaryDark">#3700B3</item>
+        <item name="colorAccent">#03DAC5</item>
+        <item name="android:statusBarColor" tools:targetApi="l">@android:color/transparent</item>
+    </style>
+
+</resources>
