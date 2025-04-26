@@ -3,6 +3,7 @@ package com.example.myapplication
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
+import android.widget.FrameLayout
 import android.widget.GridLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -12,7 +13,6 @@ import com.example.myapplication.utilities.SignalManager
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import com.example.myapplication.GameLogic
 
 class MainActivity : AppCompatActivity() {
 
@@ -85,24 +85,31 @@ class MainActivity : AppCompatActivity() {
 
             for (i in 0 until 7) {
                 for (j in 0 until 3) {
-                    val iv = ImageView(this).apply {
+                    val layout = FrameLayout(this).apply {
                         layoutParams = GridLayout.LayoutParams().apply {
                             width = cellSize
                             height = cellSize
                         }
+                    }
+
+                    val obstacle = ImageView(this).apply {
+                        setImageResource(R.drawable.ic_obstacle)
+                        visibility = if (logic.board[i][j] == 1) View.VISIBLE else View.INVISIBLE
                         scaleType = ImageView.ScaleType.FIT_CENTER
                         adjustViewBounds = true
                     }
 
-                    iv.setImageResource(
-                        when {
-                            i == GameLogic.CAR_ROW && j == logic.carColumn -> R.drawable.car
-                            logic.board[i][j] == 1 -> R.drawable.ic_obstacle
-                            else -> android.R.color.transparent
-                        }
-                    )
+                    val player = ImageView(this).apply {
+                        setImageResource(R.drawable.car)
+                        visibility = if (i == GameLogic.CAR_ROW && j == logic.carColumn) View.VISIBLE else View.INVISIBLE
+                        scaleType = ImageView.ScaleType.FIT_CENTER
+                        adjustViewBounds = true
+                    }
 
-                    grid.addView(iv)
+                    layout.addView(obstacle)
+                    layout.addView(player)
+
+                    grid.addView(layout)
                 }
             }
 

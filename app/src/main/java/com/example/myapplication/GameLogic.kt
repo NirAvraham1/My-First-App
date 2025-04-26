@@ -14,6 +14,7 @@ class GameLogic {
         if (carColumn > 0) {
             if (board[CAR_ROW][carColumn - 1] == 1) {
                 lives--
+                carColumn--
                 return true
             }
             carColumn--
@@ -25,6 +26,7 @@ class GameLogic {
         if (carColumn < 2) {
             if (board[CAR_ROW][carColumn + 1] == 1) {
                 lives--
+                carColumn++
                 return true
             }
             carColumn++
