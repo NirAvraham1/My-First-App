@@ -3,18 +3,21 @@ package com.example.myapplication
 class GameLogic {
 
     companion object {
-        const val CAR_ROW = 4
+        const val ROWS = 4
+        const val COLS = 3
+        const val CAR_ROW = ROWS - 1
     }
 
-    val board = Array(7) { IntArray(3) }
+    val board = Array(ROWS) { IntArray(COLS) }
     var carColumn = 1
     var lives = 3
+    private var tickCount = 0
 
     fun moveLeft(): Boolean {
         if (carColumn > 0) {
             if (board[CAR_ROW][carColumn - 1] == 1) {
-                lives--
                 carColumn--
+                lives--
                 return true
             }
             carColumn--
@@ -23,10 +26,10 @@ class GameLogic {
     }
 
     fun moveRight(): Boolean {
-        if (carColumn < 2) {
+        if (carColumn < COLS - 1) {
             if (board[CAR_ROW][carColumn + 1] == 1) {
-                lives--
                 carColumn++
+                lives--
                 return true
             }
             carColumn++
@@ -41,22 +44,23 @@ class GameLogic {
     fun resetGame() {
         carColumn = 1
         lives = 3
+        tickCount = 0
         for (row in board) {
             row.fill(0)
         }
     }
 
     fun tick(): Boolean {
-        for (i in board.size - 1 downTo 1) {
+        tickCount++
+
+        for (i in ROWS - 1 downTo 1) {
             board[i] = board[i - 1].copyOf()
         }
 
-        board[0] = IntArray(3).apply {
-            val spawn = (1..100).random()
-            if (spawn <= 60) {
-                val obstacleCol = (0..2).random()
-                this[obstacleCol] = 1
-            }
+        board[0] = IntArray(COLS)
+        if (tickCount % 2 == 1) {
+            val obstacleCol = (0 until COLS).random()
+            board[0][obstacleCol] = 1
         }
 
         if (board[CAR_ROW][carColumn] == 1) {
